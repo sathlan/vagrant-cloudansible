@@ -4,7 +4,7 @@ module VagrantPlugin
       attr_accessor :hosts
       attr_accessor :ansible_group
       attr_accessor :ansible_options
-      attr_accessor :inventory_file
+      attr_accessor :inventory_path
       attr_accessor :sudo
       attr_accessor :user
     end
@@ -33,5 +33,3 @@ module VagrantPlugin
 
   end
 end
-
-
