@@ -47,17 +47,16 @@ module VagrantPlugin
         ansible_host_option = config.ansible_options unless
           config.ansible_options == ::Vagrant::Plugin::V2::Config::UNSET_VALUE
         current_public_ip = ssh[:host]
-
+        fqdn = machine.config.vm.hostname
+        current_entry = "#{fqdn} ansible_ssh_host=#{current_public_ip} ansible_ssh_user=#{ssh[:username]} #{ansible_host_option}"
         hosts["[#{a_group}]"].each_with_index do |entry, idx|
-          if entry =~ /ansible_ssh_host=([\d.]+)/
-            if $1 == current_public_ip
-              hosts["[#{a_group}]"][idx] = "#{machine.name} ansible_ssh_host=#{current_public_ip} ansible_ssh_user=#{ssh[:username]} #{ansible_host_option}"
-              replaced = true
-            end
+          if entry =~ /^#{fqdn}/
+            hosts["[#{a_group}]"][idx] = current_entry
+            replaced = true
           end
         end
         if replaced == false
-          hosts["[#{a_group}]"] << "#{machine.name} ansible_ssh_host=#{current_public_ip} ansible_ssh_user=#{ssh[:username]} #{ansible_host_option}"
+          hosts["[#{a_group}]"] << current_entry
         end
 
         File.open(config.inventory_path, 'w') do |conf|
