@@ -40,7 +40,7 @@ module VagrantPlugin
       def create_or_update_hosts_file
         hosts = conf_to_hash
         ssh = @machine.ssh_info
-        a_group = config.ansible_group
+        a_group = config.ansible_group || 'no_group'
         hosts["[#{a_group}]"] = [] if hosts["[#{a_group}]"].nil?
         replaced = false
         ansible_host_option = ''
